@@ -6,8 +6,10 @@ func TestLongestPalindrome(t *testing.T) {
 	tests := []struct{ s, want string }{
 		{"zzzcbabcyyy", "cbabc"},
 		{"zzzcbaabcyyy", "cbaabc"},
+		{"zzzcbabcxzcbaabcyyy", "cbaabc"},
 		{"zcbacy", ""},
 		{"a", ""},
+		{"aa", "aa"},
 		{"aaaaaa", "aaaaaa"},
 	}
 	for _, tt := range tests {

@@ -2,56 +2,42 @@ package palindrome
 
 // LongestPalindrome returns the longest palindromic substring in string s
 func LongestPalindrome(s string) string {
-	var isEven bool
-	longestIndex := -1
-	longestLength := 0
+	var start, end int
 	for i := range s {
-		isOddPalindrome := true
-		isEvenPalindrome := true
-		for j := 0; ; j++ {
-			if i-j < 0 || i+j >= len(s) {
-				// index out of range
-				break
-			}
+		var isOddPalindrome, isEvenPalindrome = true, true
+		for j := 0; i-j >= 0 && i+j < len(s); j++ {
 			if isOddPalindrome {
-				isOddPalindrome = isPalindrome(s, i, j, false)
+				isOddPalindrome = isPalindromic(s, i, j, false)
 			}
 			if isEvenPalindrome {
-				isEvenPalindrome = isPalindrome(s, i, j, true)
+				isEvenPalindrome = isPalindromic(s, i, j, true)
 			}
 			if !isOddPalindrome && !isEvenPalindrome {
 				break
 			}
-			if j > longestLength {
-				longestIndex = i
-				longestLength = j
-				isEven = isEvenPalindrome
+			if isOddPalindrome && (j*2+1) > (end-start+1) {
+				start = i - j
+				end = i + j
+			}
+			if isEvenPalindrome && (j*2+2) > (end-start+1) {
+				start = i - j
+				end = i + 1 + j
 			}
 		}
 	}
-	if longestLength == 0 {
+	if start == end {
 		return ""
 	}
-	start := longestIndex - longestLength
-	end := longestIndex + longestLength + 1
-	if isEven {
-		end++
-	}
-	return s[start:end]
+	return s[start : end+1]
 }
 
-func isPalindrome(s string, i, j int, isEven bool) bool {
-	offset := 0
+func isPalindromic(s string, i, j int, isEven bool) bool {
+	char1Index := i - j
+	char2Index := i + j
 	if isEven {
-		offset++
+		char2Index++
 	}
-	if i-j < 0 || i+j+offset >= len(s) {
-		// index out of range
-		return false
-	}
-	if s[i-j] != s[i+j+offset] {
-		// not a palindrome anymore
-		return false
-	}
-	return true
+	return char1Index >= 0 &&
+		char2Index < len(s) &&
+		s[char1Index] == s[char2Index]
 }
